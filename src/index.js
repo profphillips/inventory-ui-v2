@@ -38,12 +38,14 @@ function App() {
     console.log(rowDataArray);
   }, [rowDataArray]);
 
-  async function addNewRow(isBuy, isFav, itemName, qty) {
+  async function addNewRow(isBuy, isFav, qty, itemName) {
     // add row to db and get new id back
     const buy = isBuy ? true : false;
     const fav = isFav ? true : false;
+    console.log("buy=", buy);
+    console.log("fav=", fav);
     let newId = await dbAddNewRow(buy, fav, itemName, qty);
-    const newRow = { _id: newId, buy: buy, fav: fav, name: itemName, qty: qty };
+    const newRow = { _id: newId, buy: buy, fav: fav, qty: qty, name: itemName };
     setRowDataArray([...rowDataArray, newRow]);
   }
 
@@ -168,35 +170,47 @@ function ColumnNames() {
   );
 }
 
-// Display's empty item name and qty text fields; when submitted it
-// adds a new row of data.
+// Display's empty checkboxes, item name, and qty text fields;
+// when submitted it adds a new row of data.
 function InputForm({ addNewRow }) {
   const [name, handleNameChange, resetNameField] = useInputState("");
   const [qty, handleQtyChange, resetQtyField] = useInputState("1");
+  const [buy, setBuy] = useState(false);
+  const [fav, setFav] = useState(false);
 
-  // next 2 lines enable the focus to return to the first textbox
-  // after the 'add new item' button is clicked
+  function handleCheckBuyChange() {
+    setBuy(!buy);
+  }
+
+  function handleCheckFavChange() {
+    setFav(!fav);
+  }
+
+  // next 2 lines enable the focus to return to the item name textbox
+  // after the 'add' button is clicked
   const textInput = React.createRef();
   const focus = () => textInput.current.focus();
-  function handleCheckShopChange() {}
-  function handleCheckFavChange() {}
+
   return (
     <>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          addNewRow(name, qty);
+          addNewRow(buy, fav, qty, name);
           resetNameField();
           resetQtyField();
-          focus(); // returns focus to first textbox after submit
+          setBuy(false);
+          setFav(false);
+          focus(); // returns focus to item name textbox after submit
         }}
       >
         <div className="grid-container">
           <div>
             <input
-              name="checkShop"
+              name="checkBuy"
               type="checkbox"
-              onChange={handleCheckShopChange}
+              onChange={handleCheckBuyChange}
+              checked={!!buy} // turn null into false and true stays true
             />
           </div>
           <div>
@@ -204,6 +218,7 @@ function InputForm({ addNewRow }) {
               name="checkFav"
               type="checkbox"
               onChange={handleCheckFavChange}
+              checked={!!fav}
             />
           </div>
           <div>
@@ -254,13 +269,15 @@ function ListRow({
   const [buy, setBuy] = useState(oneRow.buy);
   const [fav, setFav] = useState(oneRow.fav);
 
-  function handleCheckBuyChange(buy) {
-    setBuy(buy);
-    updateBuy(oneRow, buy);
+  function handleCheckBuyChange() {
+    const newBuy = !buy;
+    setBuy(newBuy);
+    updateBuy(oneRow, newBuy);
   }
-  function handleCheckFavChange(fav) {
-    setFav(fav);
-    updateFav(oneRow, fav);
+  function handleCheckFavChange() {
+    const newFav = !fav;
+    setFav(newFav);
+    updateFav(oneRow, newFav);
   }
 
   return (
@@ -269,17 +286,16 @@ function ListRow({
         <input
           name="checkBuy"
           type="checkbox"
-          value={buy}
           onChange={handleCheckBuyChange}
-          //onChange={updateBuy(oneRow,buy)}
+          checked={!!buy}
         />
       </div>
       <div>
         <input
           name="checkFav"
           type="checkbox"
-          value={fav}
           onChange={handleCheckFavChange}
+          checked={!!fav}
         />
       </div>
       <div>
@@ -329,45 +345,12 @@ function ListRow({
   );
 }
 
-// allows user to update an item's quantity
-// function EditRowForm({ oneRow, update, toggle }) {
-//   const [value, handleChange, reset] = useInputState(oneRow.qty);
-//   return (
-//     <form
-//       className="InputForm"
-//       onSubmit={(e) => {
-//         e.preventDefault();
-//         update(oneRow, value);
-//         reset();
-//         toggle();
-//       }}
-//     >
-//       {oneRow.name}
-//       <input
-//         type="text"
-//         value={value}
-//         onChange={handleChange}
-//         label="Update quantity"
-//         autoFocus={true}
-//       />
-//       Press Enter to Update
-//     </form>
-//   );
-// }
-
-// utility function to toggle a state from false to true and back
-// function useToggle(initialVal = false) {
-//   const [state, setState] = useState(initialVal);
-//   const toggle = () => setState(!state);
-//   return [state, toggle];
-// }
-
 // utility functions to fill in a text field as the user types;
-// resets the text field to "" after the user presses enter
+// resets the text field to initialVal after the user presses enter
 function useInputState(initialVal) {
   const [value, setValue] = useState(initialVal);
   const handleChange = (e) => setValue(e.target.value);
-  const reset = () => setValue("");
+  const reset = () => setValue(initialVal);
   return [value, handleChange, reset];
 }
 
@@ -417,7 +400,7 @@ async function dbGetAllData(setRowDataArray) {
 
 async function dbAddNewRow(buy, fav, itemName, qty) {
   const uri = "https://inventory-api-v2.herokuapp.com/items";
-  const payload = { buy: buy, fav: fav, name: itemName, qty: qty };
+  const payload = { buy: buy, fav: fav, qty: qty, name: itemName };
   let result = await axios.post(uri, payload);
   console.log(`db add new row res.data=${result.data}`);
   return result.data;
@@ -438,5 +421,12 @@ async function dbRemoveRow(myId) {
 }
 // ***** End API functions ***************************************************
 //
+
+// utility function to toggle a state from false to true and back
+// function useToggle(initialVal = false) {
+//   const [state, setState] = useState(initialVal);
+//   const toggle = () => setState(!state);
+//   return [state, toggle];
+// }
 
 // ***** End Of File *********************************************************
