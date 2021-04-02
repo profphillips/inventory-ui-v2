@@ -75,7 +75,7 @@ input.item-name {
 
 .form-button {
   font-size: x-small;
-  font-weight: bold;
+  /* font-weight: bold; */
   padding: 2px;
   width: 45px;
   cursor: pointer;
