@@ -1,11 +1,12 @@
-// This React app maintains a simple inventory list. The design goal was to
-// put all of the functions in a single file to help study how they work.
+// This React app is the user interface for maintaining a simple inventory
+// list. The design goal was to put all of the functions in a single file
+// to help study how they work.
 
 // Mongodb/Atlas storage is accessed via an api running on a Heroku server.
 // Both Atlas and Heroku are free accounts.
 
 // by John Phillips on 2021-02-24 revised 2021-02-25
-// v2 on 2021-03-19 revised 2021-04-01
+// v2 on 2021-03-19 revised 2021-04-02
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
@@ -20,38 +21,33 @@ ReactDOM.render(
 );
 
 //
-// ***** Main React function *************************************************
+// ***** Main function *******************************************************
 function App() {
   // Create a React state array and a function to change the data.
-  // rowDataArray contains all of our inventory data organized by row.
-  let [rowDataArray, setRowDataArray] = useState([]);
+  // dataArray contains all of our inventory data organized by row.
+  let [dataArray, setDataArray] = useState([]);
 
-  // Retrieve inventory data from the db and place in our array.
+  // On startup, retrieve inventory data from the db and place in our array.
   useEffect(() => {
-    dbGetAllData(setRowDataArray);
+    dbGetAllData(setDataArray);
   }, []); // ignore warning - empty dependency array [] so only executed once
 
-  // Any time rowDataArray changes then this hook will automatically be called.
-  // Uncomment the following to console view the rowDataArray as it is updated.
+  // Any time dataArray changes then this hook will automatically be called.
+  // Uncomment the following to console view the dataArray as it is updated.
   useEffect(() => {
-    console.log("second useEffect runs whenever the rowDataArray changes");
-    console.log(rowDataArray);
-  }, [rowDataArray]);
+    console.log("second useEffect runs whenever the dataArray changes");
+    console.log(dataArray);
+  }, [dataArray]);
 
-  async function addNewRow(isBuy, isFav, qty, itemName) {
-    // add row to db and get new id back
-    const buy = isBuy ? true : false;
-    const fav = isFav ? true : false;
-    console.log("buy=", buy);
-    console.log("fav=", fav);
-    let newId = await dbAddNewRow(buy, fav, itemName, qty);
+  // Add a new row to db and get new id back; then add to array.
+  async function addNewRow(buy, fav, qty, itemName) {
+    const newId = await dbAddNewRow(buy, fav, qty, itemName);
     const newRow = { _id: newId, buy: buy, fav: fav, qty: qty, name: itemName };
-    setRowDataArray([...rowDataArray, newRow]);
+    setDataArray([...dataArray, newRow]);
   }
 
-  function updateRowBuy(row2update, isBuy) {
-    const buy = isBuy ? true : false;
-    // just update qty and leave name and id as is
+  // When the buy checkbox is clicked update the array and then the db.
+  function updateRowBuy(row2update, buy) {
     const updatedRow = {
       _id: row2update._id,
       buy: buy,
@@ -60,18 +56,18 @@ function App() {
       name: row2update.name,
     };
     // check each row for the matching id and if found return the updated row
-    const updatedItems = rowDataArray.map((row) => {
+    const updatedItems = dataArray.map((row) => {
       if (row._id === row2update._id) {
         return updatedRow;
       }
       return row;
     });
-    setRowDataArray(updatedItems);
+    setDataArray(updatedItems);
     dbUpdateRow(updatedRow);
   }
-  function updateRowFav(row2update, isFav) {
-    const fav = isFav ? true : false;
-    // just update qty and leave name and id as is
+
+  // When the fav checkbox is clicked update the array and then the db.
+  function updateRowFav(row2update, fav) {
     const updatedRow = {
       _id: row2update._id,
       buy: row2update.buy,
@@ -79,19 +75,18 @@ function App() {
       qty: row2update.qty,
       name: row2update.name,
     };
-
-    // check each row for the matching id and if found return the updated row
-    const updatedItems = rowDataArray.map((row) => {
+    const updatedItems = dataArray.map((row) => {
       if (row._id === row2update._id) {
         return updatedRow;
       }
       return row;
     });
-    setRowDataArray(updatedItems);
+    setDataArray(updatedItems);
     dbUpdateRow(updatedRow);
   }
+
+  // When the qty textbox is changed update the array and then the db.
   function updateRowQty(row2update, qty) {
-    // just update qty and leave name and id as is
     const updatedRow = {
       _id: row2update._id,
       buy: row2update.buy,
@@ -99,18 +94,18 @@ function App() {
       qty: qty,
       name: row2update.name,
     };
-    // check each row for the matching id and if found return the updated row
-    const updatedItems = rowDataArray.map((row) => {
+    const updatedItems = dataArray.map((row) => {
       if (row._id === row2update._id) {
         return updatedRow;
       }
       return row;
     });
-    setRowDataArray(updatedItems);
+    setDataArray(updatedItems);
     dbUpdateRow(updatedRow);
   }
+
+  // When the item name textbox is changed update the array and then the db.
   function updateRowName(row2update, itemName) {
-    // just update qty and leave name and id as is
     const updatedRow = {
       _id: row2update._id,
       buy: row2update.buy,
@@ -118,30 +113,31 @@ function App() {
       qty: row2update.qty,
       name: itemName,
     };
-    // check each row for the matching id and if found return the updated row
-    const updatedItems = rowDataArray.map((row) => {
+    const updatedItems = dataArray.map((row) => {
       if (row._id === row2update._id) {
         return updatedRow;
       }
       return row;
     });
-    setRowDataArray(updatedItems);
+    setDataArray(updatedItems);
     dbUpdateRow(updatedRow);
   }
+
+  // When the delete button is pressed update the array and then the db.
   function removeRow(id2delete) {
     // filter out any row where the ids don't match
-    const updatedItems = rowDataArray.filter((row) => row._id !== id2delete);
-    setRowDataArray(updatedItems);
+    const updatedItems = dataArray.filter((row) => row._id !== id2delete);
+    setDataArray(updatedItems);
     dbRemoveRow(id2delete);
   }
 
   return (
     <div>
-      <div className="Wrapper">
+      <div className="wrapper">
         <Navbar />
         <ColumnNames />
         <InputForm addNewRow={addNewRow} className="InputForm" />
-        {rowDataArray.map((oneRow) => (
+        {dataArray.map((oneRow) => (
           <ListRow
             key={oneRow._id}
             oneRow={oneRow}
@@ -159,6 +155,7 @@ function App() {
 }
 // ***** End Main function ***************************************************
 
+// Display the column names at the top of the grid/table
 function ColumnNames() {
   return (
     <div className="column-names-container">
@@ -170,19 +167,19 @@ function ColumnNames() {
   );
 }
 
-// Display's empty checkboxes, item name, and qty text fields;
-// when submitted it adds a new row of data.
+// Display's empty checkboxes, qty, and item name text fields;
+// when submitted this adds a new row of data.
 function InputForm({ addNewRow }) {
-  const [name, handleNameChange, resetNameField] = useInputState("");
+  const [name, handleItemNameChange, resetItemNameField] = useInputState("");
   const [qty, handleQtyChange, resetQtyField] = useInputState("1");
   const [buy, setBuy] = useState(false);
   const [fav, setFav] = useState(false);
 
-  function handleCheckBuyChange() {
+  function handleBuyChange() {
     setBuy(!buy);
   }
 
-  function handleCheckFavChange() {
+  function handleFavChange() {
     setFav(!fav);
   }
 
@@ -197,7 +194,7 @@ function InputForm({ addNewRow }) {
         onSubmit={(e) => {
           e.preventDefault();
           addNewRow(buy, fav, qty, name);
-          resetNameField();
+          resetItemNameField();
           resetQtyField();
           setBuy(false);
           setFav(false);
@@ -207,44 +204,44 @@ function InputForm({ addNewRow }) {
         <div className="grid-container">
           <div>
             <input
-              name="checkBuy"
+              name="buy"
               type="checkbox"
-              onChange={handleCheckBuyChange}
+              onChange={handleBuyChange}
               checked={!!buy} // turn null into false and true stays true
             />
           </div>
           <div>
             <input
-              name="checkFav"
+              name="fav"
               type="checkbox"
-              onChange={handleCheckFavChange}
+              onChange={handleFavChange}
               checked={!!fav}
             />
           </div>
           <div>
             <input
               className="qty"
+              name="qty"
               type="text"
               value={qty}
               placeholder="Qty"
               onChange={handleQtyChange}
-              label="Add New Quantity"
             />
           </div>
           <div>
             <input
-              className="itemName"
+              className="item-name"
+              name="itemName"
               type="text"
               value={name}
               placeholder="New Item"
-              onChange={handleNameChange}
-              label="Item"
+              onChange={handleItemNameChange}
               autoFocus
-              ref={textInput} // returns focus to first textbox after submit
+              ref={textInput} // returns focus to name textbox after submit
             />
           </div>
           <div>
-            <button type="submit" className="form-button">
+            <button className="form-button" name="addButton" type="submit">
               Add
             </button>
           </div>
@@ -254,8 +251,7 @@ function InputForm({ addNewRow }) {
   );
 }
 
-// Displays a single row of data with a delete button.
-
+// Display a single row of editable data with a delete button.
 function ListRow({
   oneRow,
   remove,
@@ -264,17 +260,18 @@ function ListRow({
   updateQty,
   updateName,
 }) {
-  const [name, handleNameChange] = useInputState(oneRow.name);
-  const [qty, handleQtyChange] = useInputState(oneRow.qty);
   const [buy, setBuy] = useState(oneRow.buy);
   const [fav, setFav] = useState(oneRow.fav);
+  const [qty, handleQtyChange] = useInputState(oneRow.qty);
+  const [name, handleNameChange] = useInputState(oneRow.name);
 
-  function handleCheckBuyChange() {
+  function handleBuyChange() {
     const newBuy = !buy;
     setBuy(newBuy);
     updateBuy(oneRow, newBuy);
   }
-  function handleCheckFavChange() {
+
+  function handleFavChange() {
     const newFav = !fav;
     setFav(newFav);
     updateFav(oneRow, newFav);
@@ -284,17 +281,17 @@ function ListRow({
     <div className="grid-container">
       <div>
         <input
-          name="checkBuy"
+          name="cb-buy"
           type="checkbox"
-          onChange={handleCheckBuyChange}
-          checked={!!buy}
+          onChange={handleBuyChange}
+          checked={!!buy} // turn null into false and true stays true
         />
       </div>
       <div>
         <input
-          name="checkFav"
+          name="cb-fav"
           type="checkbox"
-          onChange={handleCheckFavChange}
+          onChange={handleFavChange}
           checked={!!fav}
         />
       </div>
@@ -311,7 +308,6 @@ function ListRow({
             type="text"
             value={qty}
             onChange={handleQtyChange}
-            label="Update quantity"
           />
         </form>
       </div>
@@ -323,19 +319,18 @@ function ListRow({
           }}
         >
           <input
+            className="item-name"
             name="name"
-            className="itemName"
             type="text"
             value={name}
             onChange={handleNameChange}
-            label="Update item name"
           />
         </form>
       </div>
       <div>
         <button
           className="form-button"
-          aria-label="Delete"
+          name="delete"
           onClick={() => remove(oneRow._id)}
         >
           Delete
@@ -345,7 +340,7 @@ function ListRow({
   );
 }
 
-// utility functions to fill in a text field as the user types;
+// Utility functions to fill in a text field as the user types;
 // resets the text field to initialVal after the user presses enter
 function useInputState(initialVal) {
   const [value, setValue] = useState(initialVal);
@@ -354,6 +349,7 @@ function useInputState(initialVal) {
   return [value, handleChange, reset];
 }
 
+// Displays the navigation bar
 function Navbar() {
   return (
     <div className="navbar">
@@ -367,19 +363,33 @@ function Navbar() {
   );
 }
 
+// Displays the footer with About information
 function Footer() {
   return (
     <footer>
-      Inventory table with Mongodb Atlas storage by John Phillips on March 20,
-      2021. Source at{" "}
+      <h3 id="about">About</h3>
+      Inventory user interface v2 by John Phillips on April 2, 2021.
+      <br />
+      <br />
+      Source{" "}
       <a href="https://github.com/profphillips/inventory-ui-v2">
         https://github.com/profphillips/inventory-ui-v2
       </a>
-      . Live page at{" "}
+      <br />
+      <br /> Live page{" "}
       <a href="https://profphillips.github.io/inventory-ui-v2/">
         https://profphillips.github.io/inventory-ui-v2/
       </a>
-      .
+      <br />
+      <br />
+      This program uses an api hosted at Heroku. The api uses a Mongodb Atlas
+      cloud database to store the data.
+      <br />
+      <br />
+      Source{" "}
+      <a href="https://github.com/profphillips/inventory-api-v2">
+        https://github.com/profphillips/inventory-api-v2
+      </a>
     </footer>
   );
 }
@@ -387,9 +397,8 @@ function Footer() {
 //
 // ***** API functions *******************************************************
 // These functions call the api running on a Heroku server
-// and carries out the desired interaction with a mongodb Atlas database.
+// which carries out the desired interaction with a mongodb Atlas database.
 
-// const dbGetAllData = async (setRowDataArray) => { // alternative syntax
 async function dbGetAllData(setRowDataArray) {
   await axios
     .get("https://inventory-api-v2.herokuapp.com/items")
@@ -398,7 +407,7 @@ async function dbGetAllData(setRowDataArray) {
     });
 }
 
-async function dbAddNewRow(buy, fav, itemName, qty) {
+async function dbAddNewRow(buy, fav, qty, itemName) {
   const uri = "https://inventory-api-v2.herokuapp.com/items";
   const payload = { buy: buy, fav: fav, qty: qty, name: itemName };
   let result = await axios.post(uri, payload);
@@ -420,13 +429,5 @@ async function dbRemoveRow(myId) {
   return result.data.deletedCount;
 }
 // ***** End API functions ***************************************************
-//
-
-// utility function to toggle a state from false to true and back
-// function useToggle(initialVal = false) {
-//   const [state, setState] = useState(initialVal);
-//   const toggle = () => setState(!state);
-//   return [state, toggle];
-// }
 
 // ***** End Of File *********************************************************
