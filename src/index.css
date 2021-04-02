@@ -16,7 +16,7 @@ code {
 .wrapper {
   margin: 0 auto;
   max-width: 550px;
-  padding: 4px;
+  padding: 0px;
   padding-bottom: 50px;
   background: lightblue;
   color: white;
