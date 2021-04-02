@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/inventory-ui-v2/static/css/main.5e22e809.chunk.css",
+    "main.css": "/inventory-ui-v2/static/css/main.eba16663.chunk.css",
     "main.js": "/inventory-ui-v2/static/js/main.61c61c0a.chunk.js",
     "main.js.map": "/inventory-ui-v2/static/js/main.61c61c0a.chunk.js.map",
     "runtime-main.js": "/inventory-ui-v2/static/js/runtime-main.d7c6fb4a.js",
@@ -8,13 +8,13 @@
     "static/js/2.7be32c9e.chunk.js": "/inventory-ui-v2/static/js/2.7be32c9e.chunk.js",
     "static/js/2.7be32c9e.chunk.js.map": "/inventory-ui-v2/static/js/2.7be32c9e.chunk.js.map",
     "index.html": "/inventory-ui-v2/index.html",
-    "static/css/main.5e22e809.chunk.css.map": "/inventory-ui-v2/static/css/main.5e22e809.chunk.css.map",
+    "static/css/main.eba16663.chunk.css.map": "/inventory-ui-v2/static/css/main.eba16663.chunk.css.map",
     "static/js/2.7be32c9e.chunk.js.LICENSE.txt": "/inventory-ui-v2/static/js/2.7be32c9e.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.d7c6fb4a.js",
     "static/js/2.7be32c9e.chunk.js",
-    "static/css/main.5e22e809.chunk.css",
+    "static/css/main.eba16663.chunk.css",
     "static/js/main.61c61c0a.chunk.js"
   ]
 }
