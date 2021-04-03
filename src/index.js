@@ -10,15 +10,62 @@
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
+// import { useRoutes, A } from "hookrouter";
+import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
 import axios from "axios";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    {/* <App /> */}
+    <NavBar />
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+// Routing
+export default function NavBar() {
+return (
+    <Router>
+      {/* <div > */}
+        <ul className="navbar">
+          <li className="nav-item">
+            <NavLink exact className="nav-link" activeClassName="nav-active" to="/">
+              Shop
+            </NavLink>
+          </li>
+
+          <li className="nav-item">
+            <NavLink className="nav-link" activeClassName="nav-active" to="/print">
+              Print
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" activeClassName="nav-active" to="/about">
+              About
+            </NavLink>
+          </li>
+        </ul>
+
+        {/* <hr /> */}
+
+        <Switch>
+          <Route exact path="/">
+            <App />
+          </Route>
+          <Route path="/about">
+            <Footer />
+          </Route>
+          <Route path="/print">
+            <div>
+            <h1>Print</h1>
+            </div>
+          </Route>
+        </Switch>
+      {/* </div> */}
+    </Router>
+  );
+}
 
 //
 // ***** Main function *******************************************************
@@ -134,7 +181,7 @@ function App() {
   return (
     <div>
       <div className="wrapper">
-        <Navbar />
+        {/* <Navbar /> */}
         <ColumnNames />
         <InputForm addNewRow={addNewRow} className="InputForm" />
         {dataArray.map((oneRow) => (
@@ -148,7 +195,7 @@ function App() {
             updateName={updateRowName}
           />
         ))}
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );
