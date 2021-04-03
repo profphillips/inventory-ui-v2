@@ -6,12 +6,12 @@
 // Both Atlas and Heroku are free accounts.
 
 // by John Phillips on 2021-02-24 revised 2021-02-25
-// v2 on 2021-03-19 revised 2021-04-02
+// v2 on 2021-03-19 revised 2021-04-03
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 // import { useRoutes, A } from "hookrouter";
-import { BrowserRouter as Router, Switch, Route, Link, NavLink } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
 import axios from "axios";
 import "./index.css";
 
@@ -54,7 +54,7 @@ return (
             <App />
           </Route>
           <Route path="/about">
-            <Footer />
+            <About />
           </Route>
           <Route path="/print">
             <div>
@@ -397,21 +397,21 @@ function useInputState(initialVal) {
 }
 
 // Displays the navigation bar
-function Navbar() {
-  return (
-    <div className="navbar">
-      <a href="#home" className="active">
-        Inventory v2
-      </a>
-      <a href="#print">Print</a>
-      <a href="#sort">Sort</a>
-      <a href="#about">About</a>
-    </div>
-  );
-}
+// function Navbar() {
+//   return (
+//     <div className="navbar">
+//       <a href="#home" className="active">
+//         Inventory v2
+//       </a>
+//       <a href="#print">Print</a>
+//       <a href="#sort">Sort</a>
+//       <a href="#about">About</a>
+//     </div>
+//   );
+// }
 
 // Displays the footer with About information
-function Footer() {
+function About() {
   return (
     <footer>
       <h3 id="about">About</h3>
