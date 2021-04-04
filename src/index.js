@@ -6,12 +6,17 @@
 // Both Atlas and Heroku are free accounts.
 
 // by John Phillips on 2021-02-24 revised 2021-02-25
-// v2 on 2021-03-19 revised 2021-04-03
+// v2 on 2021-03-19 revised 2021-04-04
 
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 // import { useRoutes, A } from "hookrouter";
-import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  NavLink,
+} from "react-router-dom";
 import axios from "axios";
 import "./index.css";
 
@@ -25,44 +30,55 @@ ReactDOM.render(
 
 // Routing
 export default function NavBar() {
-return (
+  return (
     <Router>
-      {/* <div > */}
-        <ul className="navbar">
-          <li className="nav-item">
-            <NavLink exact className="nav-link" activeClassName="nav-active" to="/">
-              Shop
-            </NavLink>
-          </li>
+      <ul className="navbar">
+        <li className="nav-item">
+          <NavLink
+            exact
+            className="nav-link"
+            activeClassName="nav-active"
+            to="/"
+          >
+            Shop
+          </NavLink>
+        </li>
 
-          <li className="nav-item">
-            <NavLink className="nav-link" activeClassName="nav-active" to="/print">
-              Print
-            </NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" activeClassName="nav-active" to="/about">
-              About
-            </NavLink>
-          </li>
-        </ul>
-
-        {/* <hr /> */}
-
-        <Switch>
-          <Route exact path="/">
-            <App />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/print">
-            <div>
+        <li className="nav-item">
+          <NavLink
+            className="nav-link"
+            activeClassName="nav-active"
+            to="/print"
+          >
+            Print
+          </NavLink>
+        </li>
+        <li className="nav-item">
+          <NavLink
+            className="nav-link"
+            activeClassName="nav-active"
+            to="/about"
+          >
+            About
+          </NavLink>
+        </li>
+      </ul>
+      <Switch>
+        <Route exact path="/">
+          <App />
+        </Route>
+        <Route path="/shop">
+          <App />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/print">
+          <div>
             <h1>Print</h1>
-            </div>
-          </Route>
-        </Switch>
-      {/* </div> */}
+          </div>
+        </Route>
+      </Switch>
     </Router>
   );
 }
@@ -170,6 +186,25 @@ function App() {
     dbUpdateRow(updatedRow);
   }
 
+  // When the item name textbox is changed update the array and then the db.
+  function updateAll(row2update, buy, fav, qty, itemName) {
+    const updatedRow = {
+      _id: row2update._id,
+      buy: buy,
+      fav: fav,
+      qty: qty,
+      name: itemName,
+    };
+    const updatedItems = dataArray.map((row) => {
+      if (row._id === row2update._id) {
+        return updatedRow;
+      }
+      return row;
+    });
+    setDataArray(updatedItems);
+    dbUpdateRow(updatedRow);
+  }
+
   // When the delete button is pressed update the array and then the db.
   function removeRow(id2delete) {
     // filter out any row where the ids don't match
@@ -193,9 +228,10 @@ function App() {
             updateBuy={updateRowBuy}
             updateQty={updateRowQty}
             updateName={updateRowName}
+            updateAll={updateAll}
           />
         ))}
-        {/* <Footer /> */}
+        <Footer />
       </div>
     </div>
   );
@@ -269,10 +305,12 @@ function InputForm({ addNewRow }) {
             <input
               className="qty"
               name="qty"
-              type="text"
+              type="number"
               value={qty}
               placeholder="Qty"
               onChange={handleQtyChange}
+              required={true}
+              autoComplete="off"
             />
           </div>
           <div>
@@ -281,15 +319,17 @@ function InputForm({ addNewRow }) {
               name="itemName"
               type="text"
               value={name}
-              placeholder="New Item"
+              placeholder="Type here then press plus"
               onChange={handleItemNameChange}
+              required={true}
+              autoComplete="off"
               autoFocus
               ref={textInput} // returns focus to name textbox after submit
             />
           </div>
           <div>
             <button className="form-button" name="addButton" type="submit">
-              Add
+              ➕
             </button>
           </div>
         </div>
@@ -306,6 +346,7 @@ function ListRow({
   updateFav,
   updateQty,
   updateName,
+  updateAll,
 }) {
   const [buy, setBuy] = useState(oneRow.buy);
   const [fav, setFav] = useState(oneRow.fav);
@@ -350,11 +391,14 @@ function ListRow({
           }}
         >
           <input
+            id={oneRow._id + "qty"}
             className="qty"
             name="qty"
-            type="text"
+            type="number"
             value={qty}
             onChange={handleQtyChange}
+            required={true}
+            autoComplete="off"
           />
         </form>
       </div>
@@ -366,21 +410,35 @@ function ListRow({
           }}
         >
           <input
+            id={oneRow._id + "name"}
             className="item-name"
             name="name"
             type="text"
             value={name}
             onChange={handleNameChange}
+            required={true}
+            autoComplete="off"
           />
         </form>
       </div>
       <div>
         <button
-          className="form-button"
+          className="form-button-cloud"
+          name="update"
+          onClick={() => {
+            console.log("qty=", qty);
+            updateAll(oneRow, buy, fav, qty, name);
+            // updateName(oneRow, name);
+          }}
+        >
+          ☁️
+        </button>
+        <button
+          className="form-button-delete"
           name="delete"
           onClick={() => remove(oneRow._id)}
         >
-          Delete
+          🗑
         </button>
       </div>
     </div>
@@ -410,7 +468,30 @@ function useInputState(initialVal) {
 //   );
 // }
 
-// Displays the footer with About information
+// Displays the footer
+function Footer() {
+  return (
+    <>
+      <footer>
+        <h3>Directions</h3>
+        <p>
+          To add a new item click on the first row's "Type here" item name
+          field. Then either press enter or click the cloud icon to save. The
+          new item will appear at the bottom of the list.
+        </p>
+        <p>
+          To edit, click on any quantity or item name value that you want to
+          change. Make your change and then press enter before leaving that
+          field. If you are changing both the quantity and the item name then
+          click the cloud icon to save. Clicking on any checkbox automatically
+          saves the new setting.
+        </p>
+        <p>To delete a row click on the trash icon.</p>
+      </footer>
+    </>
+  );
+}
+
 function About() {
   return (
     <footer>
