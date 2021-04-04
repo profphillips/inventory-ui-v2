@@ -16,6 +16,7 @@ import {
   Switch,
   Route,
   NavLink,
+  Redirect,
 } from "react-router-dom";
 import axios from "axios";
 import "./index.css";
@@ -38,7 +39,7 @@ export default function NavBar() {
             exact
             className="nav-link"
             activeClassName="nav-active"
-            to="/"
+            to="/shop"
           >
             Shop
           </NavLink>
@@ -64,16 +65,20 @@ export default function NavBar() {
         </li>
       </ul>
       <Switch>
-        <Route exact path="/">
+        <Route
+          exact
+          path="/"
+          render={() => {
+            return <Redirect to="/shop" />;
+          }}
+        />
+        <Route exact path="/shop">
           <App />
         </Route>
-        <Route path="/shop">
-          <App />
-        </Route>
-        <Route path="/about">
+        <Route exact path="/about">
           <About />
         </Route>
-        <Route path="/print">
+        <Route exact path="/print">
           <div>
             <h1>Print</h1>
           </div>

@@ -49,12 +49,11 @@ footer {
   font-size: 0.8rem;
   text-align: center;
   color: rgb(226, 247, 255);
-  width: 100%;
 }
 
 @media screen and (min-width: 500px) {
   .column-names-container {
-    margin-top: 10px;
+    margin-top: 20px;
   }
 }
 
@@ -64,7 +63,6 @@ footer {
   grid-template-columns: 30px 30px 40px auto 70px;
   grid-template-rows: 20px;
   grid-gap: 4px;
-  /* background-color: #2196f3; */
   padding: 10px 0px;
   font-size: small;
   text-align: center;
@@ -104,40 +102,28 @@ input.item-name {
 
 .form-button, .form-button-cloud, .form-button-delete {
   font-size: x-small;
-  margin-left: 5px;
-  margin-right: 0px;
+  margin-left: 0px;
+  margin-right: 5px;
   width: 30px;
   cursor: pointer;
 }
 
 .navbar {
-  width: 100%;
   background-color: #555;
   margin: 0px 0px;
-  padding: 0px 10px;
+  padding: 0px 0px;
   overflow: auto;
   list-style: none;
 }
 
-.navbar > li > a {
-  color: black;
-}
-
 .navbar > li > a:hover {
   background-color: gold;
-  color: black;
-}
-
-.navbar .active {
-  background-color: gold;
-  color: Black;
 }
 
 .nav-item {
   float: left;
   text-align: center;
-  padding: 0px 0px;
-  margin: 5px 10px;
+  margin: 5px 0px 5px 20px;
   color: red;
   background: #ccc;
   display: block;
@@ -145,15 +131,14 @@ input.item-name {
 
 .nav-link {
   text-decoration: none;
-  color: green;
+  color: black;
   font-size: small;
   display: block;
-  width: 80px;
+  width: 60px;
   height: 20px;
 }
 
 .nav-active {
   background-color: gold;
-  color: Black;
   font-weight: bold;
 }
