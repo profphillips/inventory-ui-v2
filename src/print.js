@@ -31,18 +31,16 @@ export default function Print() {
           <tbody>
             {buyData.map((oneRow) => {
               return (
-                <>
-                  <tr key={oneRow._id}>
-                    <td>{oneRow.qty}</td>
-                    <td>{oneRow.name}</td>
-                  </tr>
-                </>
+                <tr key={oneRow._id}>
+                  <td>{oneRow.qty}</td>
+                  <td>{oneRow.name}</td>
+                </tr>
               );
             })}
           </tbody>
         </table>
-        <Footer />
       </section>
+      <Footer />
     </>
   );
 }
