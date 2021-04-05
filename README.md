@@ -1,6 +1,6 @@
-# Inventory v2 - by John Phillips on April 2, 2021.
+# Inventory v2 - by John Phillips on April 5, 2021.
 
-## This React app was written as a single file of functions to better learn how React js works.
+## This React app was written as a learning project.
 
 Source link: [https://github.com/profphillips/inventory-ui-v2](https://github.com/profphillips/inventory-ui-v2).
 
@@ -10,5 +10,4 @@ This app calls inventory-api-v2 running on Heroku to access the mongodb atlas st
 
 Source link: [https://github.com/profphillips/inventory-api-v2](https://github.com/profphillips/inventory-api-v2).
 
-<img src="./appscreenshot.png">
-
+<img src="./appscreenshot.jpg">
