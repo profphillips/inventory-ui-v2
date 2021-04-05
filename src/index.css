@@ -73,14 +73,16 @@ footer {
   width: 100%;
 }
 
-input[type=text], input[type=number] {
+input[type="text"],
+input[type="number"] {
   border: none;
   border-bottom: 1px solid skyblue;
   background: lightskyblue;
   color: 333;
 }
 
-input[type=text]:focus, input[type=number]:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
   border: 3px solid whitesmoke;
 }
 
@@ -102,7 +104,9 @@ input.item-name {
   min-width: 50px;
 }
 
-.form-button, .form-button-cloud, .form-button-delete {
+.form-button,
+.form-button-cloud,
+.form-button-delete {
   font-size: x-small;
   margin-left: 0px;
   margin-right: 5px;
@@ -147,4 +151,18 @@ input.item-name {
 
 section {
   margin: 20px;
+}
+
+/* override styles when printing */
+@media print {
+  body {
+    margin: 20px;
+    color: #000;
+    background-color: #fff;
+  }
+  header,
+  footer,
+  .navbar {
+    display: none;
+  }
 }
