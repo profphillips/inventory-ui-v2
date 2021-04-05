@@ -33,10 +33,10 @@ code {
 }
 
 footer {
-  margin: 50px 0;
+  margin: 50px 20px 20px 20px;
   font-size: smaller;
   text-align: left;
-  color: #222;
+  color: #408;
 }
 
 .column-names-container {
@@ -143,4 +143,8 @@ input.item-name {
 .nav-active {
   background-color: gold;
   font-weight: bold;
+}
+
+section {
+  margin: 20px;
 }
