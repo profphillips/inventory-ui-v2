@@ -7,7 +7,6 @@ import React, { useState, useEffect } from "react";
 import { dbGetAllData, dbAddNewRow, dbUpdateRow, dbRemoveRow } from "./dbapi";
 import Footer from "./footer";
 
-//
 // ***** Main function *******************************************************
 export default function Home() {
   // Create a React state array and a function to change the data.
@@ -33,84 +32,7 @@ export default function Home() {
     setDataArray([...dataArray, newRow]);
   }
 
-  // When the buy checkbox is clicked update the array and then the db.
-  function updateRowBuy(row2update, buy) {
-    const updatedRow = {
-      _id: row2update._id,
-      buy: buy,
-      fav: row2update.fav,
-      qty: row2update.qty,
-      name: row2update.name,
-    };
-    // check each row for the matching id and if found return the updated row
-    const updatedItems = dataArray.map((row) => {
-      if (row._id === row2update._id) {
-        return updatedRow;
-      }
-      return row;
-    });
-    setDataArray(updatedItems);
-    dbUpdateRow(updatedRow);
-  }
-
-  // When the fav checkbox is clicked update the array and then the db.
-  function updateRowFav(row2update, fav) {
-    const updatedRow = {
-      _id: row2update._id,
-      buy: row2update.buy,
-      fav: fav,
-      qty: row2update.qty,
-      name: row2update.name,
-    };
-    const updatedItems = dataArray.map((row) => {
-      if (row._id === row2update._id) {
-        return updatedRow;
-      }
-      return row;
-    });
-    setDataArray(updatedItems);
-    dbUpdateRow(updatedRow);
-  }
-
-  // When the qty textbox is changed update the array and then the db.
-  function updateRowQty(row2update, qty) {
-    const updatedRow = {
-      _id: row2update._id,
-      buy: row2update.buy,
-      fav: row2update.fav,
-      qty: qty,
-      name: row2update.name,
-    };
-    const updatedItems = dataArray.map((row) => {
-      if (row._id === row2update._id) {
-        return updatedRow;
-      }
-      return row;
-    });
-    setDataArray(updatedItems);
-    dbUpdateRow(updatedRow);
-  }
-
-  // When the item name textbox is changed update the array and then the db.
-  function updateRowName(row2update, itemName) {
-    const updatedRow = {
-      _id: row2update._id,
-      buy: row2update.buy,
-      fav: row2update.fav,
-      qty: row2update.qty,
-      name: itemName,
-    };
-    const updatedItems = dataArray.map((row) => {
-      if (row._id === row2update._id) {
-        return updatedRow;
-      }
-      return row;
-    });
-    setDataArray(updatedItems);
-    dbUpdateRow(updatedRow);
-  }
-
-  // When the item name textbox is changed update the array and then the db.
+  // When the item is changed update the array and then the db.
   function updateAll(row2update, buy, fav, qty, itemName) {
     const updatedRow = {
       _id: row2update._id,
@@ -140,7 +62,6 @@ export default function Home() {
   return (
     <div>
       <div className="wrapper">
-        {/* <Navbar /> */}
         <ColumnNames />
         <InputForm addNewRow={addNewRow} className="InputForm" />
         {dataArray.map((oneRow) => (
@@ -148,10 +69,6 @@ export default function Home() {
             key={oneRow._id}
             oneRow={oneRow}
             remove={removeRow}
-            updateFav={updateRowFav}
-            updateBuy={updateRowBuy}
-            updateQty={updateRowQty}
-            updateName={updateRowName}
             updateAll={updateAll}
           />
         ))}
@@ -266,10 +183,6 @@ function InputForm({ addNewRow }) {
 function ListRow({
   oneRow,
   remove,
-  updateBuy,
-  updateFav,
-  updateQty,
-  updateName,
   updateAll,
 }) {
   const [buy, setBuy] = useState(oneRow.buy);
@@ -280,13 +193,13 @@ function ListRow({
   function handleBuyChange() {
     const newBuy = !buy;
     setBuy(newBuy);
-    updateBuy(oneRow, newBuy);
+    updateAll(oneRow, newBuy, fav, qty, name);
   }
 
   function handleFavChange() {
     const newFav = !fav;
     setFav(newFav);
-    updateFav(oneRow, newFav);
+    updateAll(oneRow, buy, newFav, qty, name);
   }
 
   return (
@@ -311,7 +224,7 @@ function ListRow({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updateQty(oneRow, qty);
+            updateAll(oneRow, buy, fav, qty, name);
           }}
         >
           <input
@@ -330,7 +243,7 @@ function ListRow({
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            updateName(oneRow, name);
+            updateAll(oneRow, buy, fav, qty, name);
           }}
         >
           <input
@@ -352,7 +265,6 @@ function ListRow({
           onClick={() => {
             console.log("qty=", qty);
             updateAll(oneRow, buy, fav, qty, name);
-            // updateName(oneRow, name);
           }}
         >
           ☁️
