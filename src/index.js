@@ -34,13 +34,8 @@ export default function NavBar() {
     <Router>
       <ul className="navbar">
         <li className="nav-item">
-          <NavLink
-            exact
-            className="nav-link"
-            activeClassName="nav-active"
-            to="/"
-          >
-            Shop
+          <NavLink className="nav-link" activeClassName="nav-active" to="/">
+            Home
           </NavLink>
         </li>
         <li className="nav-item">
@@ -53,11 +48,7 @@ export default function NavBar() {
           </NavLink>
         </li>
         <li className="nav-item">
-          <NavLink
-            className="nav-link"
-            activeClassName="nav-active"
-            to="/help"
-          >
+          <NavLink className="nav-link" activeClassName="nav-active" to="/help">
             Help
           </NavLink>
         </li>
@@ -72,9 +63,6 @@ export default function NavBar() {
         </li>
       </ul>
       <Switch>
-        <Route exact path="/">
-          <App />
-        </Route>
         <Route exact path="/print">
           <div>
             <h1>Print</h1>
@@ -82,11 +70,14 @@ export default function NavBar() {
         </Route>
         <Route exact path="/help">
           <div>
-            <h1>Help</h1>
+            <Help />
           </div>
         </Route>
         <Route exact path="/about">
           <About />
+        </Route>
+        <Route path="/">
+          <App />
         </Route>
       </Switch>
     </Router>
@@ -480,6 +471,14 @@ function useInputState(initialVal) {
 
 // Displays the footer
 function Footer() {
+  return (
+    <>
+      <footer>Inventory App by John Phillips</footer>
+    </>
+  );
+}
+
+function Help() {
   return (
     <>
       <footer>
